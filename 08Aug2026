@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo & Dự Báo Sản Lượng Khai Thác Dầu 2026</title>
+    <!-- Thư viện Chart.js để vẽ biểu đồ -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-bg: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --accent-actual: #27ae60;
+            --accent-mcm: #2980b9;
+            --accent-pvep: #e74c3c;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            color: #1a365d;
+        }
+
+        .header p {
+            margin: 0;
+            color: #718096;
+            font-size: 14px;
+        }
+
+        /* KPIs */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .kpi-card {
+            background: var(--card-bg);
+            padding: 18px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            border-left: 5px solid #cbd5e0;
+        }
+
+        .kpi-card.green { border-left-color: var(--accent-actual); }
+        .kpi-card.blue { border-left-color: var(--accent-mcm); }
+        .kpi-card.red { border-left-color: var(--accent-pvep); }
+
+        .kpi-title {
+            font-size: 13px;
+            color: #718096;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .kpi-value {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 8px 0;
+        }
+
+        .kpi-sub {
+            font-size: 12px;
+            color: #4a5568;
+        }
+
+        /* Chart Layout */
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .chart-box {
+            position: relative;
+            height: 480px;
+            width: 100%;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 850px) {
+            .grid-2col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            text-align: right;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th:first-child, td:first-child {
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        .badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-success { background: #dcfce7; color: #15803d; }
+        .badge-warning { background: #fef3c7; color: #b45309; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>BÁO CÁO & DỰ BÁO SẢN LƯỢNG KHAI THÁC DẦU 2026</h1>
+        <p>So sánh Sản lượng Thực tế vs Kế hoạch MCM & KH Quản trị PVEP/PVN ADM</p>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+        <div class="kpi-card green">
+            <div class="kpi-title">Thực tế 6 tháng đầu năm (H1)</div>
+            <div class="kpi-value">4,741,999 <small style="font-size:12px;">bbls</small></div>
+            <div class="kpi-sub">Đạt <span class="badge badge-success">100.41%</span> KH MCM</div>
+        </div>
+        <div class="kpi-card blue">
+            <div class="kpi-title">Kế hoạch MCM Cả Năm</div>
+            <div class="kpi-value">9,202,665 <small style="font-size:12px;">bbls</small></div>
+            <div class="kpi-sub">H1 đạt 51.53% KH</div>
+        </div>
+        <div class="kpi-card red">
+            <div class="kpi-title">KH Quản Trị PVEP/PVN Cả Năm</div>
+            <div class="kpi-value">9,962,575 <small style="font-size:12px;">bbls</small></div>
+            <div class="kpi-sub">H1 đạt 47.60% KH</div>
+        </div>
+    </div>
+
+    <!-- Biểu đồ 1: Thực tế vs MCM vs PVEP theo tháng và Đường Cộng dồn -->
+    <div class="chart-container">
+        <div class="chart-title">1. Biểu Đồ Sản Lượng Theo Tháng & Sản Lượng Cộng Dồn (Cum. Oil) Năm 2026</div>
+        <div class="chart-box">
+            <canvas id="monthlyProductionChart"></canvas>
+        </div>
+    </div>
+
+    <div class="grid-2col">
+        <!-- Biểu đồ 2: Dự báo BOPD -->
+        <div class="chart-container">
+            <div class="chart-title">2. Dự Báo Sản Lượng Trung Bình Ngày 5 Tháng Cuối Năm (BOPD)</div>
+            <div class="chart-box" style="height: 350px;">
+                <canvas id="bopdChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Biểu đồ 3: Cơ cấu mỏ -->
+        <div class="chart-container">
+            <div class="chart-title">3. Tỷ Trọng Sản Lượng Khai Thác 6 Tháng Cuối Năm Theo Mỏ</div>
+            <div class="chart-box" style="height: 350px;">
+                <canvas id="fieldBreakdownChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bảng dữ liệu -->
+    <div class="chart-container">
+        <div class="chart-title">Bảng Chi Tiết Sản Lượng Năm 2026</div>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tháng</th>
+                        <th>Thực Tế (bbls)</th>
+                        <th>MCM Target (bbls)</th>
+                        <th>% Thực Tế/MCM</th>
+                        <th>PVEP ADM Target (bbls)</th>
+                        <th>% Thực Tế/PVEP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Tháng 1</td><td>819,091</td><td>800,651</td><td><span class="badge badge-success">102.30%</span></td><td>816,233</td><td><span class="badge badge-success">100.35%</span></td></tr>
+                    <tr><td>Tháng 2</td><td>758,666</td><td>737,828</td><td><span class="badge badge-success">102.82%</span></td><td>767,842</td><td><span class="badge badge-warning">98.80%</span></td></tr>
+                    <tr><td>Tháng 3</td><td>841,099</td><td>824,338</td><td><span class="badge badge-success">102.03%</span></td><td>854,370</td><td><span class="badge badge-warning">98.45%</span></td></tr>
+                    <tr><td>Tháng 4</td><td>763,240</td><td>792,787</td><td><span class="badge badge-warning">96.27%</span></td><td>837,000</td><td><span class="badge badge-warning">91.19%</span></td></tr>
+                    <tr><td>Tháng 5</td><td>781,175</td><td>800,923</td><td><span class="badge badge-warning">97.53%</span></td><td>880,300</td><td><span class="badge badge-warning">88.74%</span></td></tr>
+                    <tr><td>Tháng 6</td><td>778,728</td><td>766,150</td><td><span class="badge badge-success">101.64%</span></td><td>796,122</td><td><span class="badge badge-warning">97.82%</span></td></tr>
+                    <tr><td>Tháng 7 (KH)</td><td>-</td><td>689,484</td><td>-</td><td>775,488</td><td>-</td></tr>
+                    <tr><td>Tháng 8 (KH)</td><td>-</td><td>777,920</td><td>-</td><td>863,490</td><td>-</td></tr>
+                    <tr><td>Tháng 9 (KH)</td><td>-</td><td>737,716</td><td>-</td><td>827,495</td><td>-</td></tr>
+                    <tr><td>Tháng 10 (KH)</td><td>-</td><td>793,304</td><td>-</td><td>883,098</td><td>-</td></tr>
+                    <tr><td>Tháng 11 (KH)</td><td>-</td><td>734,249</td><td>-</td><td>824,028</td><td>-</td></tr>
+                    <tr><td>Tháng 12 (KH)</td><td>-</td><td>747,315</td><td>-</td><td>837,109</td><td>-</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Dữ liệu cấu hình
+    const months = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7 (KH)', 'T8 (KH)', 'T9 (KH)', 'T10 (KH)', 'T11 (KH)', 'T12 (KH)'];
+    const actualOil = [819091, 758666, 841099, 763240, 781175, 778728, null, null, null, null, null, null];
+    const mcmTarget = [800651, 737828, 824338, 792787, 800923, 766150, 689484, 777920, 737716, 793304, 734249, 747315];
+    const pvepTarget = [816233, 767842, 854370, 837000, 880300, 796122, 775488, 863490, 827495, 883098, 824028, 837109];
+
+    // Dữ liệu cộng dồn
+    const actualCum = [819091, 1577757, 2418856, 3182096, 3963271, 4741999, null, null, null, null, null, null];
+    const mcmCum = [800651, 1538479, 2362817, 3155604, 3956527, 4722676, 5412160, 6190080, 6927796, 7721100, 8455349, 9202664];
+    const pvepCum = [816233, 1584075, 2438445, 3275445, 4155745, 4951867, 5727355, 6590845, 7418340, 8301438, 9125466, 9962575];
+
+    // Khởi tạo Biểu đồ 1
+    const ctx1 = document.getElementById('monthlyProductionChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: months,
+            datasets: [
+                // 1. Cột sản lượng tháng
+                {
+                    label: 'Thực Tế Tháng (Actual Oil)',
+                    data: actualOil,
+                    backgroundColor: '#27ae60',
+                    borderRadius: 4,
+                    yAxisID: 'yMonthly'
+                },
+                {
+                    label: 'KH MCM Tháng Target',
+                    data: mcmTarget,
+                    backgroundColor: '#2980b9',
+                    borderRadius: 4,
+                    yAxisID: 'yMonthly'
+                },
+                {
+                    label: 'KH Quản Trị PVEP Tháng Target',
+                    data: pvepTarget,
+                    backgroundColor: 'rgba(231, 76, 60, 0.4)',
+                    borderColor: '#e74c3c',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    yAxisID: 'yMonthly'
+                },
+                // 2. Đường Cộng Dồn (Trục Y bên phải)
+                {
+                    label: 'Cộng Dồn Thực Tế (Cum. Actual)',
+                    data: actualCum,
+                    type: 'line',
+                    borderColor: '#1e8449',
+                    backgroundColor: '#1e8449',
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    fill: false,
+                    yAxisID: 'yCumulative'
+                },
+                {
+                    label: 'Cộng Dồn KH MCM (Cum. MCM)',
+                    data: mcmCum,
+                    type: 'line',
+                    borderColor: '#2980b9',
+                    backgroundColor: '#2980b9',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    pointRadius: 4,
+                    fill: false,
+                    yAxisID: 'yCumulative'
+                },
+                {
+                    label: 'Cộng Dồn KH PVEP (Cum. PVEP)',
+                    data: pvepCum,
+                    type: 'line',
+                    borderColor: '#c0392b',
+                    backgroundColor: '#c0392b',
+                    borderWidth: 2,
+                    borderDash: [3, 3],
+                    pointRadius: 4,
+                    fill: false,
+                    yAxisID: 'yCumulative'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: { usePointStyle: true, padding: 15 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) label += ': ';
+                            if (context.parsed.y !== null) {
+                                label += new Intl.NumberFormat('en-US').format(context.parsed.y) + ' bbls';
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false }
+                },
+                // Trục Y trái: Sản lượng từng tháng
+                yMonthly: {
+                    type: 'linear',
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Sản Lượng Tháng (bbls)',
+                        color: '#2c3e50',
+                        font: { weight: 'bold' }
+                    },
+                    min: 0,
+                    max: 1200000,
+                    ticks: {
+                        callback: function(value) { return (value / 1000) + 'k'; }
+                    }
+                },
+                // Trục Y phải: Sản lượng cộng dồn
+                yCumulative: {
+                    type: 'linear',
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Sản Lượng Cộng Dồn (bbls)',
+                        color: '#16a085',
+                        font: { weight: 'bold' }
+                    },
+                    min: 0,
+                    max: 12000000,
+                    grid: { drawOnChartArea: false },
+                    ticks: {
+                        callback: function(value) { return (value / 1000000).toFixed(1) + 'M'; }
+                    }
+                }
+            }
+        }
+    });
+
+    // Khởi tạo Biểu đồ 2 (Dự báo BOPD)
+    const bopdMonths = ['Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+    const mcmBOPD = [24611, 26665, 26317, 25796, 25627];
+    const pvepBOPD = [26360, 29818, 29173, 28758, 28568];
+
+    const ctx2 = document.getElementById('bopdChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: bopdMonths,
+            datasets: [
+                {
+                    label: 'KH MCM (BOPD)',
+                    data: mcmBOPD,
+                    borderColor: '#2980b9',
+                    backgroundColor: '#2980b9',
+                    borderWidth: 2,
+                    tension: 0.2
+                },
+                {
+                    label: 'KH PVEP ADM (BOPD)',
+                    data: pvepBOPD,
+                    borderColor: '#e74c3c',
+                    backgroundColor: '#e74c3c',
+                    borderWidth: 2,
+                    tension: 0.2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    min: 20000,
+                    ticks: {
+                        callback: function(value) { return new Intl.NumberFormat('en-US').format(value) + ' BOPD'; }
+                    }
+                }
+            }
+        }
+    });
+
+    // Khởi tạo Biểu đồ 3 (Cơ cấu sản lượng các mỏ)
+    const ctx3 = document.getElementById('fieldBreakdownChart').getContext('2d');
+    new Chart(ctx3, {
+        type: 'doughnut',
+        data: {
+            labels: ['Mỏ SDSW', 'Mỏ CPP (SV+NE+SN)', 'Mỏ ST'],
+            datasets: [{
+                data: [28256, 38870, 78770],
+                backgroundColor: ['#f1c40f', '#e67e22', '#8e44ad']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
