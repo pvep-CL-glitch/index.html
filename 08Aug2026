@@ -38,6 +38,7 @@
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            position: relative;
         }
 
         .header h1 {
@@ -47,9 +48,21 @@
         }
 
         .header p {
-            margin: 0;
+            margin: 0 0 8px 0;
             color: #718096;
             font-size: 14px;
+        }
+
+        /* Timestamp badge */
+        .created-timestamp {
+            font-size: 12px;
+            color: #2b6cb0;
+            background: #ebf8ff;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 1px solid #bee3f8;
         }
 
         /* KPIs */
@@ -160,6 +173,57 @@
 
         .badge-success { background: #dcfce7; color: #15803d; }
         .badge-warning { background: #fef3c7; color: #b45309; }
+        .badge-progress { background: #e0f2fe; color: #0284c7; }
+
+        /* Reason Box Styling */
+        .reason-box {
+            margin-top: 15px;
+            background: #fffbe8;
+            border: 1px solid #ffe58f;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 13px;
+        }
+        .reason-title {
+            font-weight: 700;
+            color: #873800;
+            margin-bottom: 6px;
+        }
+        .reason-list {
+            margin: 0;
+            padding-left: 20px;
+            color: #434343;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .compressor-note-box {
+            margin-top: 15px;
+            background: #f0f7ff;
+            border: 1px solid #bae0ff;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 13px;
+        }
+        .compressor-note-title {
+            font-weight: 700;
+            color: #003a8c;
+            margin-bottom: 6px;
+        }
+
+        .grc-note-box {
+            margin-top: 15px;
+            background: #fcf5ff;
+            border: 1px solid #e9d8fd;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 13px;
+        }
+        .grc-note-title {
+            font-weight: 700;
+            color: #553c9a;
+            margin-bottom: 6px;
+        }
     </style>
 </head>
 <body>
@@ -168,50 +232,90 @@
     <div class="header">
         <h1>BÁO CÁO & DỰ BÁO SẢN LƯỢNG KHAI THÁC DẦU 2026</h1>
         <p>So sánh Sản lượng Thực tế vs Kế hoạch MCM & KH Quản trị PVEP/PVN ADM</p>
+        <div class="created-timestamp">
+            🕒 Thời gian tải báo cáo: <span id="fileCreatedTime">--/--/---- --:--:--</span>
+        </div>
     </div>
 
     <!-- KPIs -->
     <div class="kpi-grid">
         <div class="kpi-card green">
-            <div class="kpi-title">Thực tế 6 tháng đầu năm (H1)</div>
-            <div class="kpi-value">4,741,999 <small style="font-size:12px;">bbls</small></div>
-            <div class="kpi-sub">Đạt <span class="badge badge-success">100.41%</span> KH MCM</div>
+            <div class="kpi-title" id="kpiActualTitle">Thực tế Lũy Kế</div>
+            <div class="kpi-value" id="kpiActualVal">0 <small style="font-size:12px;">bbls</small></div>
+            <div class="kpi-sub" id="kpiActualSub">Cập nhật theo dữ liệu hằng ngày</div>
         </div>
         <div class="kpi-card blue">
             <div class="kpi-title">Kế hoạch MCM Cả Năm</div>
             <div class="kpi-value">9,202,665 <small style="font-size:12px;">bbls</small></div>
-            <div class="kpi-sub">H1 đạt 51.53% KH</div>
+            <div class="kpi-sub" id="kpiMcmSub">Lũy kế hiện đạt --% KH Năm</div>
         </div>
         <div class="kpi-card red">
-            <div class="kpi-title">KH Quản Trị PVEP/PVN Cả Năm</div>
-            <div class="kpi-value">9,962,575 <small style="font-size:12px;">bbls</small></div>
-            <div class="kpi-sub">H1 đạt 47.60% KH</div>
-        </div>
-    </div>
-
-    <!-- Biểu đồ 1: Thực tế vs MCM vs PVEP theo tháng và Đường Cộng dồn -->
-    <div class="chart-container">
-        <div class="chart-title">1. Biểu Đồ Sản Lượng Theo Tháng & Sản Lượng Cộng Dồn (Cum. Oil) Năm 2026</div>
-        <div class="chart-box">
-            <canvas id="monthlyProductionChart"></canvas>
+            <div class="kpi-title">KH Quản Trị PVEP Cả Năm</div>
+            <div class="kpi-value">9,960,000 <small style="font-size:12px;">bbls</small></div>
+            <div class="kpi-sub" id="kpiPvepSub">Lũy kế hiện đạt --% KH Năm</div>
         </div>
     </div>
 
     <div class="grid-2col">
-        <!-- Biểu đồ 2: Dự báo BOPD -->
+        <!-- Biểu đồ 1 -->
         <div class="chart-container">
-            <div class="chart-title">2. Dự Báo Sản Lượng Trung Bình Ngày 5 Tháng Cuối Năm (BOPD)</div>
+            <div class="chart-title">1. Dự Báo Sản Lượng Trung Bình Ngày 5 Tháng Cuối Năm (BOPD)</div>
             <div class="chart-box" style="height: 350px;">
                 <canvas id="bopdChart"></canvas>
             </div>
         </div>
 
-        <!-- Biểu đồ 3: Cơ cấu mỏ -->
+        <!-- Biểu đồ 2 -->
         <div class="chart-container">
-            <div class="chart-title">3. Tỷ Trọng Sản Lượng Khai Thác 6 Tháng Cuối Năm Theo Mỏ</div>
-            <div class="chart-box" style="height: 350px;">
-                <canvas id="fieldBreakdownChart"></canvas>
+            <div class="chart-title">2. Sản Lượng Khai Thác 7 Ngày Gần Nhất (bbls)</div>
+            <div class="chart-box" style="height: 220px;">
+                <canvas id="last7DaysChart"></canvas>
             </div>
+            
+            <div class="reason-box">
+                <div class="reason-title">📝 Nguyên nhân tăng/giảm biến động sản lượng gần đây:</div>
+                <ul class="reason-list" id="reasonList">
+                    <!-- Nạp động qua JS -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biểu đồ 3 -->
+    <div class="chart-container">
+        <div class="chart-title">3. Biểu Đồ Sản Lượng Theo Tháng & Sản Lượng Cộng Dồn (Cum. Oil) Năm 2026</div>
+        <div class="chart-box">
+            <canvas id="monthlyProductionChart"></canvas>
+        </div>
+    </div>
+
+    <!-- BIỂU ĐỒ SỐ 4 - CÔNG SUẤT MÁY NÉN KHÍ CPP -->
+    <div class="chart-container">
+        <div class="chart-title">4. Giám Sát Công Suất Chi Tiết Hằng Ngày Các Máy Nén Khí CPP Từ 01/01/2026 (TBVN Flowrate, CPP LGC-A, CPP LGC-B - MMscfd)</div>
+        <div class="chart-box" style="height: 420px;">
+            <canvas id="compressorFullChart"></canvas>
+        </div>
+        
+        <div class="compressor-note-box">
+            <div class="compressor-note-title">⚙️ Ghi Chú Vận Hành & Sự Cố Kỹ Thuật Máy Nén Khí CPP (Trích xuất đầy đủ từ Daily Monitoring):</div>
+            <ul class="reason-list" id="compressorNotesList">
+                <!-- Nạp động qua JS -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- BIỂU ĐỒ SỐ 5 - MÁY NÉN KHÍ STT - GRC -->
+    <div class="chart-container">
+        <div class="chart-title">5. Giám Sát Công Suất Hằng Ngày Máy Nén Khí STT - GRC Từ 01/01/2026 (GRC Flowrate - MMscfd)</div>
+        <div class="chart-box" style="height: 400px;">
+            <canvas id="grcChart"></canvas>
+        </div>
+        
+        <div class="grc-note-box">
+            <div class="grc-note-title">🌀 Ghi Chú Vận Hành & Sự Cố Kỹ Thuật Máy Nén Khí STT - GRC:</div>
+            <ul class="reason-list" id="grcNotesList">
+                <!-- Nạp động qua JS -->
+            </ul>
         </div>
     </div>
 
@@ -230,19 +334,8 @@
                         <th>% Thực Tế/PVEP</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr><td>Tháng 1</td><td>819,091</td><td>800,651</td><td><span class="badge badge-success">102.30%</span></td><td>816,233</td><td><span class="badge badge-success">100.35%</span></td></tr>
-                    <tr><td>Tháng 2</td><td>758,666</td><td>737,828</td><td><span class="badge badge-success">102.82%</span></td><td>767,842</td><td><span class="badge badge-warning">98.80%</span></td></tr>
-                    <tr><td>Tháng 3</td><td>841,099</td><td>824,338</td><td><span class="badge badge-success">102.03%</span></td><td>854,370</td><td><span class="badge badge-warning">98.45%</span></td></tr>
-                    <tr><td>Tháng 4</td><td>763,240</td><td>792,787</td><td><span class="badge badge-warning">96.27%</span></td><td>837,000</td><td><span class="badge badge-warning">91.19%</span></td></tr>
-                    <tr><td>Tháng 5</td><td>781,175</td><td>800,923</td><td><span class="badge badge-warning">97.53%</span></td><td>880,300</td><td><span class="badge badge-warning">88.74%</span></td></tr>
-                    <tr><td>Tháng 6</td><td>778,728</td><td>766,150</td><td><span class="badge badge-success">101.64%</span></td><td>796,122</td><td><span class="badge badge-warning">97.82%</span></td></tr>
-                    <tr><td>Tháng 7 (KH)</td><td>-</td><td>689,484</td><td>-</td><td>775,488</td><td>-</td></tr>
-                    <tr><td>Tháng 8 (KH)</td><td>-</td><td>777,920</td><td>-</td><td>863,490</td><td>-</td></tr>
-                    <tr><td>Tháng 9 (KH)</td><td>-</td><td>737,716</td><td>-</td><td>827,495</td><td>-</td></tr>
-                    <tr><td>Tháng 10 (KH)</td><td>-</td><td>793,304</td><td>-</td><td>883,098</td><td>-</td></tr>
-                    <tr><td>Tháng 11 (KH)</td><td>-</td><td>734,249</td><td>-</td><td>824,028</td><td>-</td></tr>
-                    <tr><td>Tháng 12 (KH)</td><td>-</td><td>747,315</td><td>-</td><td>837,109</td><td>-</td></tr>
+                <tbody id="dataTableBody">
+                    <!-- Nạp động qua JS -->
                 </tbody>
             </table>
         </div>
@@ -250,214 +343,660 @@
 </div>
 
 <script>
-    // Dữ liệu cấu hình
-    const months = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7 (KH)', 'T8 (KH)', 'T9 (KH)', 'T10 (KH)', 'T11 (KH)', 'T12 (KH)'];
-    const actualOil = [819091, 758666, 841099, 763240, 781175, 778728, null, null, null, null, null, null];
+    // Số liệu gốc T1 -> T7 (bbls)
+    const baseMonthlyActual = [819091, 758666, 841099, 763240, 781175, 778728, 859867, null, null, null, null, null];
     const mcmTarget = [800651, 737828, 824338, 792787, 800923, 766150, 689484, 777920, 737716, 793304, 734249, 747315];
-    const pvepTarget = [816233, 767842, 854370, 837000, 880300, 796122, 775488, 863490, 827495, 883098, 824028, 837109];
+    const pvepTarget = [819000, 759000, 841000, 763000, 781000, 779000, 859000, 817000, 895000, 903000, 863000, 886000];
 
-    // Dữ liệu cộng dồn
-    const actualCum = [819091, 1577757, 2418856, 3182096, 3963271, 4741999, null, null, null, null, null, null];
-    const mcmCum = [800651, 1538479, 2362817, 3155604, 3956527, 4722676, 5412160, 6190080, 6927796, 7721100, 8455349, 9202664];
-    const pvepCum = [816233, 1584075, 2438445, 3275445, 4155745, 4951867, 5727355, 6590845, 7418340, 8301438, 9125466, 9962575];
+    const monthLabels = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8 (Lũy kế ngày)', 'Tháng 9 (KH)', 'Tháng 10 (KH)', 'Tháng 11 (KH)', 'Tháng 12 (KH)'];
+    const shortLabels = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
 
-    // Khởi tạo Biểu đồ 1
-    const ctx1 = document.getElementById('monthlyProductionChart').getContext('2d');
-    new Chart(ctx1, {
-        type: 'bar',
-        data: {
-            labels: months,
-            datasets: [
-                // 1. Cột sản lượng tháng
-                {
-                    label: 'Thực Tế Tháng (Actual Oil)',
-                    data: actualOil,
-                    backgroundColor: '#27ae60',
-                    borderRadius: 4,
-                    yAxisID: 'yMonthly'
-                },
-                {
-                    label: 'KH MCM Tháng Target',
-                    data: mcmTarget,
-                    backgroundColor: '#2980b9',
-                    borderRadius: 4,
-                    yAxisID: 'yMonthly'
-                },
-                {
-                    label: 'KH Quản Trị PVEP Tháng Target',
-                    data: pvepTarget,
-                    backgroundColor: 'rgba(231, 76, 60, 0.4)',
-                    borderColor: '#e74c3c',
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    yAxisID: 'yMonthly'
-                },
-                // 2. Đường Cộng Dồn (Trục Y bên phải)
-                {
-                    label: 'Cộng Dồn Thực Tế (Cum. Actual)',
-                    data: actualCum,
-                    type: 'line',
-                    borderColor: '#1e8449',
-                    backgroundColor: '#1e8449',
-                    borderWidth: 3,
-                    pointRadius: 5,
-                    fill: false,
-                    yAxisID: 'yCumulative'
-                },
-                {
-                    label: 'Cộng Dồn KH MCM (Cum. MCM)',
-                    data: mcmCum,
-                    type: 'line',
-                    borderColor: '#2980b9',
-                    backgroundColor: '#2980b9',
-                    borderWidth: 2,
-                    borderDash: [5, 5],
-                    pointRadius: 4,
-                    fill: false,
-                    yAxisID: 'yCumulative'
-                },
-                {
-                    label: 'Cộng Dồn KH PVEP (Cum. PVEP)',
-                    data: pvepCum,
-                    type: 'line',
-                    borderColor: '#c0392b',
-                    backgroundColor: '#c0392b',
-                    borderWidth: 2,
-                    borderDash: [3, 3],
-                    pointRadius: 4,
-                    fill: false,
-                    yAxisID: 'yCumulative'
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: {
-                mode: 'index',
-                intersect: false
+    // DANH SÁCH CẬP NHẬT SẢN LƯỢNG HẰNG NGÀY
+    const dailyRecords = {
+        "2026-08-01": 26600,
+        "2026-08-02": 26600,
+        "2026-08-03": 26600,
+        "2026-08-04": 26600,
+        "2026-08-05": 26600,
+        "2026-08-06": 26625,
+        "2026-08-07": 24359,
+        "2026-08-08": 26818,
+        "2026-08-09": 27456,
+        "2026-08-10": 26078,
+        "2026-08-11": 26026
+    };
+
+    // KHAI BÁO NGUYÊN NHÂN TĂNG/GIẢM BẤT THƯỜNG CHO CÁC NGÀY
+    const dailyReasons = {
+        "2026-08-07": "Giảm (-2,266 bbls): Xử lý sự cố kỹ thuật máy nén khí tại mỏ CPP.",
+        "2026-08-08": "Tăng (+2,459 bbls): Hoàn thành bảo dưỡng, đưa máy nén khí hoạt động trở lại 100% công suất.",
+        "2026-08-09": "Tăng (+638 bbls): Tối ưu hóa dòng chảy giếng ST-02X.",
+        "2026-08-10": "Giảm (-1,378 bbls): Điều chỉnh giảm sản lượng kỹ thuật định kỳ tại giếng SDSW.",
+        "2026-08-11": "Ổn định (-52 bbls): Khai thác ổn định theo đúng kế hoạch vận hành."
+    };
+
+    // DỮ LIỆU ĐẦY ĐỦ 223 NGÀY TỪ FILE PDF MONITORING (01/01/2026 - 11/08/2026)
+    const rawCompressorData = [
+        { d: '01/01', tbvn: 32.99, lgcA: 80.39, lgcB: 68.31, grc: 119.65, note: '', grcNote: '' },
+        { d: '02/01', tbvn: 33.04, lgcA: 80.32, lgcB: 67.93, grc: 119.84, note: '', grcNote: '' },
+        { d: '03/01', tbvn: 33.57, lgcA: 84.24, lgcB: 14.67, grc: 119.86, note: 'Dừng LGC-B từ 5:00 đến 23:52 để bảo dưỡng 4K PM', grcNote: '' },
+        { d: '04/01', tbvn: 33.36, lgcA: 79.69, lgcB: 71.24, grc: 119.67, note: '', grcNote: '' },
+        { d: '05/01', tbvn: 33.15, lgcA: 81.10, lgcB: 73.83, grc: 119.74, note: '', grcNote: '' },
+        { d: '06/01', tbvn: 33.23, lgcA: 83.00, lgcB: 75.79, grc: 119.97, note: '', grcNote: '' },
+        { d: '07/01', tbvn: 33.29, lgcA: 84.23, lgcB: 74.89, grc: 119.64, note: '', grcNote: '' },
+        { d: '08/01', tbvn: 33.43, lgcA: 83.03, lgcB: 74.93, grc: 118.93, note: '', grcNote: '' },
+        { d: '09/01', tbvn: 33.14, lgcA: 82.39, lgcB: 75.57, grc: 93.75, note: '', grcNote: 'Bảo dưỡng 8K PM và xả khí ngắt đoạn (Back Puffing)' },
+        { d: '10/01', tbvn: 32.42, lgcA: 81.20, lgcB: 74.65, grc: 92.32, note: '', grcNote: 'Bảo dưỡng 8K PM và xả khí ngắt đoạn (Back Puffing)' },
+        { d: '11/01', tbvn: 32.41, lgcA: 82.22, lgcB: 75.04, grc: 121.25, note: '', grcNote: '' },
+        { d: '12/01', tbvn: 32.37, lgcA: 83.23, lgcB: 75.91, grc: 122.02, note: '', grcNote: '' },
+        { d: '13/01', tbvn: 32.00, lgcA: 85.48, lgcB: 75.08, grc: 121.77, note: '', grcNote: '' },
+        { d: '14/01', tbvn: 31.55, lgcA: 84.80, lgcB: 75.11, grc: 121.91, note: '', grcNote: '' },
+        { d: '15/01', tbvn: 25.78, lgcA: 75.54, lgcB: 74.01, grc: 120.18, note: 'Bảo dưỡng 4K PM LGC-A', grcNote: '' },
+        { d: '16/01', tbvn: 21.24, lgcA: 76.23, lgcB: 73.91, grc: 120.17, note: 'Bảo dưỡng 8K PM LGC-B', grcNote: '' },
+        { d: '17/01', tbvn: 27.68, lgcA: 75.55, lgcB: 73.74, grc: 120.33, note: 'Bảo dưỡng 4K PM LGC-A', grcNote: '' },
+        { d: '18/01', tbvn: 33.75, lgcA: 78.37, lgcB: 73.82, grc: 120.38, note: '', grcNote: '' },
+        { d: '19/01', tbvn: 24.67, lgcA: 79.34, lgcB: 73.86, grc: 102.05, note: 'Dừng LGC-B xử lý lỗi độ dịch chuyển trục (axial displacement)', grcNote: 'Sự cố mất điện Blackout FIF và dừng máy GRC' },
+        { d: '20/01', tbvn: 33.58, lgcA: 76.95, lgcB: 73.58, grc: 120.67, note: '', grcNote: '' },
+        { d: '21/01', tbvn: 33.77, lgcA: 76.89, lgcB: 73.40, grc: 120.25, note: '', grcNote: '' },
+        { d: '22/01', tbvn: 33.76, lgcA: 79.06, lgcB: 73.73, grc: 120.11, note: '', grcNote: '' },
+        { d: '23/01', tbvn: 34.12, lgcA: 81.87, lgcB: 75.08, grc: 120.07, note: '', grcNote: '' },
+        { d: '24/01', tbvn: 33.28, lgcA: 81.65, lgcB: 75.17, grc: 120.10, note: '', grcNote: '' },
+        { d: '25/01', tbvn: 34.17, lgcA: 81.73, lgcB: 75.35, grc: 120.04, note: '', grcNote: '' },
+        { d: '26/01', tbvn: 34.03, lgcA: 81.56, lgcB: 75.33, grc: 120.05, note: '', grcNote: '' },
+        { d: '27/01', tbvn: 34.00, lgcA: 81.52, lgcB: 75.19, grc: 120.26, note: '', grcNote: '' },
+        { d: '28/01', tbvn: 33.80, lgcA: 81.80, lgcB: 74.69, grc: 120.51, note: '', grcNote: '' },
+        { d: '29/01', tbvn: 33.73, lgcA: 81.66, lgcB: 74.87, grc: 120.49, note: '', grcNote: '' },
+        { d: '30/01', tbvn: 33.97, lgcA: 82.62, lgcB: 75.30, grc: 120.30, note: '', grcNote: '' },
+        { d: '31/01', tbvn: 33.94, lgcA: 81.85, lgcB: 74.36, grc: 120.20, note: '', grcNote: '' },
+        { d: '01/02', tbvn: 33.58, lgcA: 81.81, lgcB: 74.05, grc: 120.20, note: '', grcNote: '' },
+        { d: '02/02', tbvn: 33.33, lgcA: 82.31, lgcB: 73.85, grc: 120.15, note: '', grcNote: '' },
+        { d: '03/02', tbvn: 33.71, lgcA: 76.73, lgcB: 74.48, grc: 120.20, note: '', grcNote: '' },
+        { d: '04/02', tbvn: 33.64, lgcA: 71.34, lgcB: 74.23, grc: 120.20, note: '', grcNote: '' },
+        { d: '05/02', tbvn: 33.65, lgcA: 80.91, lgcB: 75.19, grc: 120.30, note: '', grcNote: '' },
+        { d: '06/02', tbvn: 33.34, lgcA: 82.87, lgcB: 75.41, grc: 120.30, note: '', grcNote: '' },
+        { d: '07/02', tbvn: 33.18, lgcA: 82.50, lgcB: 75.17, grc: 120.50, note: '', grcNote: '' },
+        { d: '08/02', tbvn: 33.49, lgcA: 83.29, lgcB: 75.06, grc: 120.50, note: '', grcNote: '' },
+        { d: '09/02', tbvn: 33.48, lgcA: 82.74, lgcB: 75.02, grc: 120.55, note: '', grcNote: '' },
+        { d: '10/02', tbvn: 33.50, lgcA: 82.82, lgcB: 75.24, grc: 120.89, note: '', grcNote: '' },
+        { d: '11/02', tbvn: 33.32, lgcA: 82.75, lgcB: 75.35, grc: 121.28, note: '', grcNote: '' },
+        { d: '12/02', tbvn: 33.58, lgcA: 83.23, lgcB: 75.17, grc: 121.57, note: '', grcNote: '' },
+        { d: '13/02', tbvn: 33.50, lgcA: 82.34, lgcB: 74.89, grc: 120.22, note: '', grcNote: '' },
+        { d: '14/02', tbvn: 33.51, lgcA: 82.29, lgcB: 74.76, grc: 120.00, note: '', grcNote: '' },
+        { d: '15/02', tbvn: 33.29, lgcA: 81.73, lgcB: 73.98, grc: 120.10, note: '', grcNote: '' },
+        { d: '16/02', tbvn: 32.98, lgcA: 79.51, lgcB: 72.83, grc: 120.30, note: '', grcNote: '' },
+        { d: '17/02', tbvn: 32.85, lgcA: 79.72, lgcB: 72.96, grc: 120.46, note: '', grcNote: '' },
+        { d: '18/02', tbvn: 32.88, lgcA: 80.12, lgcB: 73.22, grc: 120.50, note: '', grcNote: '' },
+        { d: '19/02', tbvn: 32.84, lgcA: 79.84, lgcB: 72.98, grc: 120.70, note: '', grcNote: '' },
+        { d: '20/02', tbvn: 28.70, lgcA: 79.79, lgcB: 73.01, grc: 120.90, note: 'Cold wash LGC-A', grcNote: '' },
+        { d: '21/02', tbvn: 31.85, lgcA: 79.72, lgcB: 72.98, grc: 120.55, note: 'Cold wash LGC-B; xử lý rò rỉ van xả dầu bôi trơn LGC-A', grcNote: '' },
+        { d: '22/02', tbvn: 33.31, lgcA: 80.29, lgcB: 73.46, grc: 120.40, note: '', grcNote: '' },
+        { d: '23/02', tbvn: 34.84, lgcA: 82.14, lgcB: 74.38, grc: 120.03, note: '', grcNote: '' },
+        { d: '24/02', tbvn: 34.86, lgcA: 81.71, lgcB: 74.63, grc: 120.24, note: '', grcNote: '' },
+        { d: '25/02', tbvn: 35.04, lgcA: 80.77, lgcB: 74.15, grc: 120.37, note: '', grcNote: '' },
+        { d: '26/02', tbvn: 35.16, lgcA: 81.09, lgcB: 74.45, grc: 120.11, note: '', grcNote: '' },
+        { d: '27/02', tbvn: 35.07, lgcA: 80.86, lgcB: 75.40, grc: 120.00, note: '', grcNote: '' },
+        { d: '28/02', tbvn: 35.33, lgcA: 29.71, lgcB: 75.81, grc: 119.37, note: 'Bảo dưỡng 16 giờ (4K PM) LGC-A', grcNote: '' },
+        { d: '01/03', tbvn: 12.85, lgcA: 78.07, lgcB: 73.20, grc: 120.05, note: 'Sự cố ESD do hỏng hệ thống nguồn UPS TBVN', grcNote: '' },
+        { d: '02/03', tbvn: 27.19, lgcA: 82.44, lgcB: 73.88, grc: 120.10, note: 'LGC-B thay van EGF bị hỏng', grcNote: '' },
+        { d: '03/03', tbvn: 35.72, lgcA: 81.74, lgcB: 73.15, grc: 120.01, note: '', grcNote: '' },
+        { d: '04/03', tbvn: 35.90, lgcA: 81.64, lgcB: 73.28, grc: 120.40, note: '', grcNote: '' },
+        { d: '05/03', tbvn: 35.78, lgcA: 82.68, lgcB: 73.80, grc: 120.73, note: '', grcNote: '' },
+        { d: '06/03', tbvn: 35.66, lgcA: 84.37, lgcB: 73.46, grc: 122.11, note: '', grcNote: '' },
+        { d: '07/03', tbvn: 35.75, lgcA: 84.09, lgcB: 73.20, grc: 123.65, note: '', grcNote: '' },
+        { d: '08/03', tbvn: 35.63, lgcA: 83.04, lgcB: 73.13, grc: 120.53, note: '', grcNote: '' },
+        { d: '09/03', tbvn: 34.66, lgcA: 84.54, lgcB: 74.01, grc: 120.68, note: '', grcNote: '' },
+        { d: '10/03', tbvn: 33.71, lgcA: 84.45, lgcB: 73.64, grc: 121.84, note: '', grcNote: '' },
+        { d: '11/03', tbvn: 33.51, lgcA: 84.09, lgcB: 74.09, grc: 120.85, note: '', grcNote: '' },
+        { d: '12/03', tbvn: 33.84, lgcA: 84.36, lgcB: 74.25, grc: 120.89, note: '', grcNote: '' },
+        { d: '13/03', tbvn: 33.98, lgcA: 84.00, lgcB: 74.38, grc: 120.83, note: '', grcNote: '' },
+        { d: '14/03', tbvn: 35.66, lgcA: 84.14, lgcB: 74.34, grc: 120.52, note: '', grcNote: '' },
+        { d: '15/03', tbvn: 31.83, lgcA: 82.08, lgcB: 72.65, grc: 120.47, note: 'Sự cố mất điện TBVN Blackout; LGC-B tripped 20 phút', grcNote: '' },
+        { d: '16/03', tbvn: 35.97, lgcA: 84.32, lgcB: 75.45, grc: 120.35, note: '', grcNote: '' },
+        { d: '17/03', tbvn: 35.95, lgcA: 84.96, lgcB: 75.58, grc: 120.11, note: '', grcNote: '' },
+        { d: '18/03', tbvn: 35.95, lgcA: 84.78, lgcB: 75.56, grc: 120.14, note: '', grcNote: '' },
+        { d: '19/03', tbvn: 35.75, lgcA: 83.02, lgcB: 74.35, grc: 120.32, note: '', grcNote: '' },
+        { d: '20/03', tbvn: 35.64, lgcA: 84.27, lgcB: 75.32, grc: 120.27, note: '', grcNote: '' },
+        { d: '21/03', tbvn: 35.54, lgcA: 83.99, lgcB: 74.86, grc: 120.17, note: '', grcNote: '' },
+        { d: '22/03', tbvn: 35.36, lgcA: 83.85, lgcB: 74.44, grc: 120.53, note: '', grcNote: '' },
+        { d: '23/03', tbvn: 35.36, lgcA: 82.80, lgcB: 74.03, grc: 120.44, note: '', grcNote: '' },
+        { d: '24/03', tbvn: 35.11, lgcA: 82.52, lgcB: 74.01, grc: 120.18, note: '', grcNote: '' },
+        { d: '25/03', tbvn: 35.07, lgcA: 82.06, lgcB: 73.84, grc: 120.50, note: '', grcNote: '' },
+        { d: '26/03', tbvn: 35.04, lgcA: 81.49, lgcB: 73.35, grc: 120.74, note: '', grcNote: '' },
+        { d: '27/03', tbvn: 34.94, lgcA: 80.87, lgcB: 73.26, grc: 120.02, note: '', grcNote: '' },
+        { d: '28/03', tbvn: 34.64, lgcA: 81.12, lgcB: 73.12, grc: 120.08, note: '', grcNote: '' },
+        { d: '29/03', tbvn: 34.30, lgcA: 80.43, lgcB: 72.63, grc: 120.04, note: '', grcNote: '' },
+        { d: '30/03', tbvn: 33.97, lgcA: 80.10, lgcB: 72.25, grc: 120.26, note: '', grcNote: '' },
+        { d: '31/03', tbvn: 33.55, lgcA: 79.17, lgcB: 71.41, grc: 119.91, note: '', grcNote: '' },
+        { d: '01/04', tbvn: 33.74, lgcA: 78.84, lgcB: 70.81, grc: 120.10, note: '', grcNote: 'Phát hiện rò rỉ khí tại đường ống STT sang CPP' },
+        { d: '02/04', tbvn: 34.24, lgcA: 73.70, lgcB: 70.05, grc: 120.14, note: 'Rò rỉ tại ống đứng (riser) STT CPP', grcNote: 'Phát hiện rò rỉ khí tại ống đứng STT CPP' },
+        { d: '03/04', tbvn: 33.93, lgcA: 77.52, lgcB: 69.50, grc: 120.04, note: '', grcNote: '' },
+        { d: '04/04', tbvn: 33.04, lgcA: 77.09, lgcB: 68.95, grc: 58.69, note: 'Dừng LGC-A từ 3:59-16:15 để đóng van TRV', grcNote: 'Rò rỉ tuyến đường ống Riser từ STT sang CPP' },
+        { d: '05/04', tbvn: 25.47, lgcA: 76.12, lgcB: 67.84, grc: 120.13, note: 'Thay đồng hồ đo lưu lượng LPC', grcNote: '' },
+        { d: '06/04', tbvn: 33.06, lgcA: 74.66, lgcB: 67.62, grc: 120.16, note: '', grcNote: '' },
+        { d: '07/04', tbvn: 33.00, lgcA: 75.03, lgcB: 67.78, grc: 120.11, note: '', grcNote: '' },
+        { d: '08/04', tbvn: 33.27, lgcA: 74.48, lgcB: 68.59, grc: 120.19, note: '', grcNote: '' },
+        { d: '09/04', tbvn: 33.00, lgcA: 75.71, lgcB: 69.50, grc: 120.05, note: '', grcNote: '' },
+        { d: '10/04', tbvn: 32.44, lgcA: 76.30, lgcB: 68.93, grc: 120.00, note: '', grcNote: '' },
+        { d: '11/04', tbvn: 32.73, lgcA: 76.03, lgcB: 69.05, grc: 120.03, note: '', grcNote: '' },
+        { d: '12/04', tbvn: 33.23, lgcA: 75.55, lgcB: 68.77, grc: 120.01, note: '', grcNote: '' },
+        { d: '13/04', tbvn: 24.45, lgcA: 74.82, lgcB: 69.46, grc: 120.05, note: 'TBVN bị ESD do hỏng nguồn UPS; Dừng LGC-B thay van EGF', grcNote: '' },
+        { d: '14/04', tbvn: 23.82, lgcA: 76.57, lgcB: 69.43, grc: 120.06, note: '', grcNote: '' },
+        { d: '15/04', tbvn: 33.80, lgcA: 76.16, lgcB: 69.02, grc: 120.00, note: '', grcNote: '' },
+        { d: '16/04', tbvn: 33.55, lgcA: 72.69, lgcB: 65.39, grc: 114.09, note: '', grcNote: 'Thực hiện tháo gỡ thiết bị trên đường ống PIP' },
+        { d: '17/04', tbvn: 32.84, lgcA: 71.30, lgcB: 64.44, grc: 109.01, note: '', grcNote: '' },
+        { d: '18/04', tbvn: 33.46, lgcA: 73.04, lgcB: 66.18, grc: 107.29, note: '', grcNote: '' },
+        { d: '19/04', tbvn: 33.29, lgcA: 75.15, lgcB: 68.54, grc: 107.77, note: '', grcNote: '' },
+        { d: '20/04', tbvn: 33.28, lgcA: 73.23, lgcB: 67.45, grc: 108.99, note: '', grcNote: '' },
+        { d: '21/04', tbvn: 32.60, lgcA: 72.53, lgcB: 68.24, grc: 108.67, note: '', grcNote: '' },
+        { d: '22/04', tbvn: 32.65, lgcA: 57.01, lgcB: 68.37, grc: 108.12, note: 'Cold wash LGC-A', grcNote: '' },
+        { d: '23/04', tbvn: 30.84, lgcA: 81.38, lgcB: 32.83, grc: 108.18, note: 'LGC-B tripped do đệm phớt; Bảo dưỡng 2K PM LGC-B', grcNote: 'Áp suất đầu xuất khí của tàu VSP cao gây ngưng trệ' },
+        { d: '24/04', tbvn: 26.87, lgcA: 79.33, lgcB: 69.42, grc: 107.77, note: 'Cold wash LGC-A/B', grcNote: '' },
+        { d: '25/04', tbvn: 33.38, lgcA: 79.54, lgcB: 71.86, grc: 107.90, note: '', grcNote: '' },
+        { d: '26/04', tbvn: 29.64, lgcA: 80.00, lgcB: 72.79, grc: 108.30, note: 'Sự cố mất điện TBVN Blackout', grcNote: '' },
+        { d: '27/04', tbvn: 33.19, lgcA: 80.60, lgcB: 72.31, grc: 108.37, note: '', grcNote: '' },
+        { d: '28/04', tbvn: 31.98, lgcA: 79.50, lgcB: 71.44, grc: 107.67, note: '', grcNote: '' },
+        { d: '29/04', tbvn: 32.83, lgcA: 78.95, lgcB: 71.30, grc: 107.67, note: '', grcNote: '' },
+        { d: '30/04', tbvn: 32.45, lgcA: 79.37, lgcB: 70.93, grc: 108.86, note: '', grcNote: '' },
+        { d: '01/05', tbvn: 31.89, lgcA: 80.23, lgcB: 71.27, grc: 109.01, note: '', grcNote: '' },
+        { d: '02/05', tbvn: 31.59, lgcA: 78.97, lgcB: 70.55, grc: 108.86, note: '', grcNote: '' },
+        { d: '03/05', tbvn: 31.62, lgcA: 79.09, lgcB: 70.61, grc: 108.84, note: '', grcNote: '' },
+        { d: '04/05', tbvn: 28.18, lgcA: 77.94, lgcB: 69.70, grc: 108.69, note: 'Cold wash động cơ LGC-A và thay kim phun nhiên liệu', grcNote: '' },
+        { d: '05/05', tbvn: 33.05, lgcA: 78.60, lgcB: 69.74, grc: 108.21, note: '', grcNote: '' },
+        { d: '06/05', tbvn: 32.75, lgcA: 78.86, lgcB: 69.52, grc: 107.78, note: '', grcNote: '' },
+        { d: '07/05', tbvn: 32.51, lgcA: 77.41, lgcB: 69.14, grc: 107.11, note: '', grcNote: '' },
+        { d: '08/05', tbvn: 31.44, lgcA: 76.75, lgcB: 68.55, grc: 105.34, note: '', grcNote: '' },
+        { d: '09/05', tbvn: 32.20, lgcA: 76.78, lgcB: 69.01, grc: 107.19, note: '', grcNote: '' },
+        { d: '10/05', tbvn: 32.13, lgcA: 77.53, lgcB: 69.43, grc: 108.72, note: '', grcNote: '' },
+        { d: '11/05', tbvn: 31.86, lgcA: 77.53, lgcB: 69.43, grc: 108.53, note: '', grcNote: '' },
+        { d: '12/05', tbvn: 31.00, lgcA: 75.84, lgcB: 68.23, grc: 108.06, note: '', grcNote: '' },
+        { d: '13/05', tbvn: 30.74, lgcA: 76.06, lgcB: 68.25, grc: 107.94, note: '', grcNote: '' },
+        { d: '14/05', tbvn: 26.36, lgcA: 76.04, lgcB: 67.94, grc: 104.42, note: 'Cold wash đồng thời LGC-A/B', grcNote: '' },
+        { d: '15/05', tbvn: 30.87, lgcA: 74.60, lgcB: 65.65, grc: 108.19, note: '', grcNote: 'GRC tripped do lỗi cảnh báo nhiệt độ TT-2606A-2 HH từ 19:28 đến 20:00' },
+        { d: '16/05', tbvn: 30.69, lgcA: 75.30, lgcB: 64.10, grc: 108.62, note: '', grcNote: '' },
+        { d: '17/05', tbvn: 30.78, lgcA: 76.28, lgcB: 66.79, grc: 108.55, note: '', grcNote: '' },
+        { d: '18/05', tbvn: 19.56, lgcA: 76.07, lgcB: 66.34, grc: 108.49, note: 'Sự cố ESD-1 tại giàn WHP-A', grcNote: '' },
+        { d: '19/05', tbvn: 29.92, lgcA: 74.40, lgcB: 66.92, grc: 108.37, note: '', grcNote: '' },
+        { d: '20/05', tbvn: 28.66, lgcA: 75.44, lgcB: 65.15, grc: 108.31, note: 'Dừng LGC-A thay dây curoa V-belt', grcNote: '' },
+        { d: '21/05', tbvn: 30.44, lgcA: 75.33, lgcB: 65.10, grc: 75.17, note: '', grcNote: '' },
+        { d: '22/05', tbvn: 20.59, lgcA: 76.40, lgcB: 55.09, grc: 110.56, note: 'Cold wash LGC-A và LGC-B', grcNote: 'GRC kích hoạt dừng khẩn cấp ESD-2 do tín hiệu từ giàn khoan Drilling Rig' },
+        { d: '23/05', tbvn: 24.55, lgcA: 74.78, lgcB: 67.38, grc: 109.14, note: 'Thay bộ truyền động van HPC ASV', grcNote: '' },
+        { d: '24/05', tbvn: 30.42, lgcA: 62.61, lgcB: 70.10, grc: 108.84, note: 'Cold wash LGC-A', grcNote: '' },
+        { d: '25/05', tbvn: 30.58, lgcA: 79.27, lgcB: 69.97, grc: 108.38, note: '', grcNote: '' },
+        { d: '26/05', tbvn: 30.89, lgcA: 78.66, lgcB: 68.33, grc: 107.38, note: '', grcNote: '' },
+        { d: '27/05', tbvn: 30.96, lgcA: 79.48, lgcB: 69.36, grc: 105.72, note: '', grcNote: '' },
+        { d: '28/05', tbvn: 31.60, lgcA: 79.73, lgcB: 68.96, grc: 108.61, note: '', grcNote: '' },
+        { d: '29/05', tbvn: 31.43, lgcA: 80.08, lgcB: 70.44, grc: 110.25, note: '', grcNote: '' },
+        { d: '30/05', tbvn: 31.25, lgcA: 79.38, lgcB: 69.84, grc: 106.19, note: '', grcNote: 'Thực hiện công tác bảo dưỡng 4K PM cho máy nén GRC' },
+        { d: '31/05', tbvn: 30.08, lgcA: 79.79, lgcB: 68.78, grc: 110.08, note: '', grcNote: '' },
+        { d: '01/06', tbvn: 30.34, lgcA: 78.54, lgcB: 67.49, grc: 112.55, note: '', grcNote: '' },
+        { d: '02/06', tbvn: 30.23, lgcA: 79.76, lgcB: 69.03, grc: 111.09, note: '', grcNote: '' },
+        { d: '03/06', tbvn: 29.96, lgcA: 79.09, lgcB: 67.37, grc: 114.81, note: '', grcNote: 'GRC tripped lúc 10:18 do lưu lượng khí làm kín LF Seal Gas quá thấp' },
+        { d: '04/06', tbvn: 29.53, lgcA: 78.93, lgcB: 66.39, grc: 114.12, note: '', grcNote: '' },
+        { d: '05/06', tbvn: 29.35, lgcA: 78.97, lgcB: 66.87, grc: 113.95, note: '', grcNote: '' },
+        { d: '06/06', tbvn: 30.25, lgcA: 80.99, lgcB: 69.32, grc: 113.50, note: '', grcNote: '' },
+        { d: '07/06', tbvn: 29.44, lgcA: 82.65, lgcB: 70.45, grc: 114.35, note: '', grcNote: '' },
+        { d: '08/06', tbvn: 29.45, lgcA: 81.77, lgcB: 70.03, grc: 114.23, note: '', grcNote: '' },
+        { d: '09/06', tbvn: 29.40, lgcA: 80.16, lgcB: 70.17, grc: 118.71, note: 'LGC-B tripped do nhiệt độ ổ trục cao', grcNote: '' },
+        { d: '10/06', tbvn: 29.41, lgcA: 79.75, lgcB: 68.92, grc: 111.99, note: 'LGC-B tripped nhiệt độ ổ trục cao; LGC-A tripped lỗi vị trí van', grcNote: '' },
+        { d: '11/06', tbvn: 30.07, lgcA: 80.03, lgcB: 68.89, grc: 110.87, note: '', grcNote: '' },
+        { d: '12/06', tbvn: 30.74, lgcA: 81.20, lgcB: 69.86, grc: 111.97, note: '', grcNote: '' },
+        { d: '13/06', tbvn: 30.02, lgcA: 82.34, lgcB: 71.01, grc: 113.37, note: 'Khởi động lại LGC-A lúc 21:30', grcNote: '' },
+        { d: '14/06', tbvn: 27.36, lgcA: 81.61, lgcB: 71.58, grc: 113.63, note: 'Cold wash LGC-A, xử lý lỗi van HPC ASV', grcNote: '' },
+        { d: '15/06', tbvn: 31.76, lgcA: 80.89, lgcB: 70.57, grc: 113.02, note: '', grcNote: '' },
+        { d: '16/06', tbvn: 31.76, lgcA: 80.78, lgcB: 70.32, grc: 112.96, note: '', grcNote: '' },
+        { d: '17/06', tbvn: 31.82, lgcA: 80.56, lgcB: 70.71, grc: 112.28, note: '', grcNote: '' },
+        { d: '18/06', tbvn: 31.29, lgcA: 80.86, lgcB: 70.95, grc: 112.12, note: '', grcNote: '' },
+        { d: '19/06', tbvn: 31.28, lgcA: 81.03, lgcB: 70.99, grc: 112.17, note: '', grcNote: '' },
+        { d: '20/06', tbvn: 30.61, lgcA: 81.56, lgcB: 71.24, grc: 112.56, note: 'Máy nén khí nhiên liệu tripped do bộ làm mát rung cao', grcNote: '' },
+        { d: '21/06', tbvn: 30.12, lgcA: 79.11, lgcB: 68.09, grc: 112.79, note: 'Máy nén khí nhiên liệu tripped do bộ làm mát rung cao', grcNote: '' },
+        { d: '22/06', tbvn: 29.69, lgcA: 78.47, lgcB: 67.13, grc: 113.19, note: '', grcNote: '' },
+        { d: '23/06', tbvn: 29.37, lgcA: 77.37, lgcB: 65.58, grc: 113.26, note: '', grcNote: '' },
+        { d: '24/06', tbvn: 28.85, lgcA: 76.72, lgcB: 65.67, grc: 112.98, note: '', grcNote: '' },
+        { d: '25/06', tbvn: 27.40, lgcA: 76.71, lgcB: 65.28, grc: 113.43, note: 'Dừng LGC-B 4 giờ để Cold wash tuabin', grcNote: '' },
+        { d: '26/06', tbvn: 28.34, lgcA: 76.84, lgcB: 66.17, grc: 113.27, note: '', grcNote: '' },
+        { d: '27/06', tbvn: 32.22, lgcA: 77.24, lgcB: 66.89, grc: 100.74, note: '', grcNote: '' },
+        { d: '28/06', tbvn: 31.08, lgcA: 77.13, lgcB: 68.31, grc: 111.89, note: '', grcNote: '' },
+        { d: '29/06', tbvn: 31.18, lgcA: 77.65, lgcB: 69.09, grc: 108.69, note: 'LGC-A dừng do van TRV mở 100% khi hỏng đồng hồ LPC', grcNote: '' },
+        { d: '30/06', tbvn: 33.52, lgcA: 74.83, lgcB: 69.26, grc: 114.32, note: 'Lưu lượng giảm xấp xỉ 10 MMscfd lúc 16:45', grcNote: '' },
+        { d: '01/07', tbvn: 33.07, lgcA: 67.46, lgcB: 70.61, grc: 114.54, note: 'Đóng giếng lúc 14:00 do STV-LGC-B tripped', grcNote: '' },
+        { d: '02/07', tbvn: 33.62, lgcA: 67.36, lgcB: 54.93, grc: 114.34, note: '', grcNote: '' },
+        { d: '03/07', tbvn: 34.18, lgcA: 66.11, lgcB: 66.45, grc: 114.37, note: '', grcNote: '' },
+        { d: '04/07', tbvn: 33.97, lgcA: 67.25, lgcB: 68.58, grc: 114.52, note: '', grcNote: '' },
+        { d: '05/07', tbvn: 33.88, lgcA: 68.14, lgcB: 68.49, grc: 114.42, note: '', grcNote: '' },
+        { d: '06/07', tbvn: 33.90, lgcA: 69.00, lgcB: 69.14, grc: 114.27, note: '', grcNote: '' },
+        { d: '07/07', tbvn: 33.03, lgcA: 67.22, lgcB: 69.02, grc: 114.30, note: '', grcNote: '' },
+        { d: '08/07', tbvn: 32.33, lgcA: 49.36, lgcB: 65.84, grc: 114.30, note: 'Dừng LGC-A nhiều lần trong ngày thực hiện Cold wash', grcNote: '' },
+        { d: '09/07', tbvn: 32.25, lgcA: 78.14, lgcB: 63.48, grc: 114.25, note: 'Dừng LGC-B từ 12:45 - 16:45 để Cold wash', grcNote: '' },
+        { d: '10/07', tbvn: 32.12, lgcA: 77.61, lgcB: 52.19, grc: 114.83, note: '', grcNote: '' },
+        { d: '11/07', tbvn: 32.33, lgcA: 76.88, lgcB: 69.72, grc: 116.59, note: '', grcNote: '' },
+        { d: '12/07', tbvn: 31.88, lgcA: 78.98, lgcB: 72.01, grc: 118.13, note: 'LGC-B tripped lúc 17:12 do nhiệt độ ổ trục NDE cao', grcNote: 'Sự cố ESD-28 trên PIP do thiết bị báo cháy/khói kích hoạt tại Cellar Deck' },
+        { d: '13/07', tbvn: 31.88, lgcA: 77.16, lgcB: 69.33, grc: 118.24, note: '', grcNote: '' },
+        { d: '14/07', tbvn: 26.76, lgcA: 78.73, lgcB: 70.84, grc: 118.40, note: 'Dừng LGC-A từ 9:15-19:00 thực hiện Cold wash và van ASV mở 6.4%', grcNote: '' },
+        { d: '15/07', tbvn: 31.11, lgcA: 78.65, lgcB: 71.16, grc: 118.20, note: 'Dừng LGC-A xử lý van ASV; Dừng LGC-B Cold wash tuabin', grcNote: '' },
+        { d: '16/07', tbvn: 29.91, lgcA: 77.07, lgcB: 69.73, grc: 118.22, note: '', grcNote: '' },
+        { d: '17/07', tbvn: 33.15, lgcA: 77.55, lgcB: 70.75, grc: 118.09, note: '', grcNote: '' },
+        { d: '18/07', tbvn: 33.01, lgcA: 77.78, lgcB: 71.15, grc: 117.87, note: '', grcNote: '' },
+        { d: '19/07', tbvn: 32.71, lgcA: 78.76, lgcB: 71.42, grc: 118.39, note: '', grcNote: '' },
+        { d: '20/07', tbvn: 31.71, lgcA: 77.60, lgcB: 70.32, grc: 118.06, note: 'Dừng LGC-A từ 13:10-14:15 do van TRV lỗi mở 100%', grcNote: '' },
+        { d: '21/07', tbvn: 32.77, lgcA: 76.45, lgcB: 69.45, grc: 118.10, note: '', grcNote: '' },
+        { d: '22/07', tbvn: 32.52, lgcA: 76.79, lgcB: 69.09, grc: 116.51, note: '', grcNote: '' },
+        { d: '23/07', tbvn: 32.28, lgcA: 77.07, lgcB: 69.15, grc: 117.02, note: '', grcNote: '' },
+        { d: '24/07', tbvn: 33.02, lgcA: 75.04, lgcB: 67.58, grc: 115.38, note: '', grcNote: '' },
+        { d: '25/07', tbvn: 33.44, lgcA: 78.46, lgcB: 71.78, grc: 115.61, note: '', grcNote: '' },
+        { d: '26/07', tbvn: 33.27, lgcA: 78.38, lgcB: 69.78, grc: 117.41, note: '', grcNote: '' },
+        { d: '27/07', tbvn: 33.27, lgcA: 77.29, lgcB: 68.36, grc: 117.31, note: '', grcNote: '' },
+        { d: '28/07', tbvn: 33.37, lgcA: 77.75, lgcB: 68.78, grc: 116.51, note: '', grcNote: '' },
+        { d: '29/07', tbvn: 33.30, lgcA: 78.48, lgcB: 69.30, grc: 114.95, note: '', grcNote: '' },
+        { d: '30/07', tbvn: 33.45, lgcA: 78.93, lgcB: 69.79, grc: 114.32, note: '', grcNote: '' },
+        { d: '31/07', tbvn: 33.15, lgcA: 78.87, lgcB: 69.80, grc: 114.28, note: '', grcNote: '' },
+        { d: '01/08', tbvn: 32.99, lgcA: 78.15, lgcB: 69.22, grc: 114.00, note: '', grcNote: '' },
+        { d: '02/08', tbvn: 32.39, lgcA: 78.40, lgcB: 69.49, grc: 114.23, note: '', grcNote: '' },
+        { d: '03/08', tbvn: 31.53, lgcA: 76.93, lgcB: 68.55, grc: 113.85, note: 'LGC-A tripped từ 4:33 - 5:40 do báo động quạt thông gió hỏng', grcNote: '' },
+        { d: '04/08', tbvn: 32.04, lgcA: 76.93, lgcB: 68.04, grc: 113.18, note: '', grcNote: '' },
+        { d: '05/08', tbvn: 32.53, lgcA: 76.23, lgcB: 67.35, grc: 100.43, note: '', grcNote: '' },
+        { d: '06/08', tbvn: 32.41, lgcA: 76.22, lgcB: 67.50, grc: 114.07, note: '', grcNote: '' },
+        { d: '07/08', tbvn: 31.81, lgcA: 73.57, lgcB: 62.64, grc: 114.41, note: 'LGC-B tripped do van điều áp FMV báo lỗi', grcNote: 'Giàn CPP bị sự cố ESD-2 lan truyền gây dừng khẩn cấp ESD-3 tại STT' },
+        { d: '08/08', tbvn: 31.60, lgcA: 71.20, lgcB: 57.67, grc: 113.32, note: '', grcNote: '' },
+        { d: '09/08', tbvn: 31.89, lgcA: 76.54, lgcB: 65.76, grc: 113.01, note: '', grcNote: '' },
+        { d: '10/08', tbvn: 32.26, lgcA: 76.91, lgcB: 66.51, grc: 113.20, note: 'Giàn CPP gặp sự cố ESD-2 từ 03:25 đến 03:45', grcNote: '' },
+        { d: '11/08', tbvn: 32.09, lgcA: 76.23, lgcB: 66.40, grc: 113.15, note: '', grcNote: '' }
+    ];
+
+    let chart1, chart2, chart3, chart4, chart5;
+
+    function setCreatedTimestamp() {
+        const now = new Date();
+        document.getElementById('fileCreatedTime').textContent = `${now.toLocaleDateString('vi-VN')} ${now.toLocaleTimeString('vi-VN')}`;
+    }
+
+    function computeMonthlyActuals() {
+        let monthly = [...baseMonthlyActual];
+        let monthlyTotals = {};
+        let augDaysCount = 0;
+
+        Object.keys(dailyRecords).forEach(dateStr => {
+            const dateObj = new Date(dateStr);
+            const monthIdx = dateObj.getMonth();
+            const val = parseFloat(dailyRecords[dateStr]) || 0;
+
+            if (!monthlyTotals[monthIdx]) monthlyTotals[monthIdx] = 0;
+            monthlyTotals[monthIdx] += val;
+
+            if (monthIdx === 7) augDaysCount++;
+        });
+
+        Object.keys(monthlyTotals).forEach(mIdx => {
+            monthly[mIdx] = monthlyTotals[mIdx];
+        });
+
+        return { monthly, augDaysCount };
+    }
+
+    function calculateCumulative(arr) {
+        let cum = [];
+        let currentSum = 0;
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] !== null) {
+                currentSum += arr[i];
+                cum.push(currentSum);
+            } else {
+                cum.push(null);
+            }
+        }
+        return cum;
+    }
+
+    function renderDashboard() {
+        setCreatedTimestamp();
+        const { monthly: actualOil, augDaysCount } = computeMonthlyActuals();
+        const actualCum = calculateCumulative(actualOil);
+        const mcmCum = calculateCumulative(mcmTarget);
+        const pvepCum = calculateCumulative(pvepTarget);
+
+        const augActualTotal = actualOil[7] || 0;
+        const augActualBOPD = augDaysCount > 0 ? Math.round(augActualTotal / augDaysCount) : null;
+        const sortedDates = Object.keys(dailyRecords).sort().reverse();
+
+        // Render Bảng Sản Lượng Tháng
+        const tbody = document.getElementById('dataTableBody');
+        tbody.innerHTML = '';
+        actualOil.forEach((act, idx) => {
+            const mcmPct = act ? ((act / mcmTarget[idx]) * 100).toFixed(2) + '%' : '-';
+            const pvepPct = act ? ((act / pvepTarget[idx]) * 100).toFixed(2) + '%' : '-';
+            
+            const badgeMcm = act ? `<span class="badge ${parseFloat(mcmPct) >= 100 ? 'badge-success' : 'badge-progress'}">${mcmPct}</span>` : '-';
+            const badgePvep = act ? `<span class="badge ${parseFloat(pvepPct) >= 100 ? 'badge-success' : 'badge-progress'}">${pvepPct}</span>` : '-';
+
+            tbody.innerHTML += `
+                <tr>
+                    <td>${monthLabels[idx]}</td>
+                    <td>${act ? act.toLocaleString('en-US') : '-'}</td>
+                    <td>${mcmTarget[idx].toLocaleString('en-US')}</td>
+                    <td>${badgeMcm}</td>
+                    <td>${pvepTarget[idx].toLocaleString('en-US')}</td>
+                    <td>${badgePvep}</td>
+                </tr>
+            `;
+        });
+
+        // Update KPI Cards
+        const lastIdx = actualOil.findLastIndex(v => v !== null);
+        const totalActual = lastIdx !== -1 ? actualCum[lastIdx] : 0;
+        document.getElementById('kpiActualVal').innerHTML = `${totalActual.toLocaleString('en-US')} <small style="font-size:12px;">bbls</small>`;
+        document.getElementById('kpiMcmSub').textContent = `Lũy kế hiện đạt ${((totalActual / 9202665) * 100).toFixed(2)}% KH Năm`;
+        document.getElementById('kpiPvepSub').textContent = `Lũy kế hiện đạt ${((totalActual / 9960000) * 100).toFixed(2)}% KH Năm`;
+
+        // Biểu đồ Dự Báo BOPD
+        if (chart2) chart2.destroy();
+        const ctx2 = document.getElementById('bopdChart').getContext('2d');
+        chart2 = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: ['Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+                datasets: [
+                    {
+                        label: 'Thực Tế BOPD (Trung bình ngày T8)',
+                        data: [augActualBOPD, null, null, null, null],
+                        borderColor: '#27ae60',
+                        backgroundColor: '#27ae60',
+                        borderWidth: 3,
+                        pointRadius: 6,
+                        pointStyle: 'rectRot'
+                    },
+                    {
+                        label: 'KH MCM (BOPD)',
+                        data: [24611, 26665, 26317, 25796, 25627],
+                        borderColor: '#2980b9',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'KH PVEP ADM (BOPD)',
+                        data: [26400, 29800, 29100, 28800, 28600],
+                        borderColor: '#e74c3c',
+                        borderWidth: 2
+                    }
+                ]
             },
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: { usePointStyle: true, padding: 15 }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) label += ': ';
-                            if (context.parsed.y !== null) {
-                                label += new Intl.NumberFormat('en-US').format(context.parsed.y) + ' bbls';
-                            }
-                            return label;
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        min: 20000,
+                        ticks: {
+                            callback: function(value) { return new Intl.NumberFormat('en-US').format(value) + ' BOPD'; }
                         }
                     }
                 }
+            }
+        });
+
+        // Biểu đồ 7 ngày gần nhất
+        const last7Dates = sortedDates.slice(0, 7).reverse();
+        const last7Values = last7Dates.map(d => dailyRecords[d]);
+
+        const mcmDailyTarget = 24611;
+        const pvepDailyTarget = 26400;
+
+        if (chart3) chart3.destroy();
+        const ctx3 = document.getElementById('last7DaysChart').getContext('2d');
+        chart3 = new Chart(ctx3, {
+            type: 'bar',
+            data: {
+                labels: last7Dates.map(d => d.slice(5)),
+                datasets: [
+                    {
+                        label: 'Sản lượng thực tế (bbls)',
+                        data: last7Values,
+                        backgroundColor: last7Values.map((v, i, arr) => {
+                            if (i === 0) return '#27ae60';
+                            return v >= arr[i-1] ? '#27ae60' : '#e74c3c';
+                        }),
+                        borderRadius: 4,
+                        order: 2
+                    },
+                    {
+                        label: 'MCM Target (24.6k)',
+                        data: Array(last7Dates.length).fill(mcmDailyTarget),
+                        type: 'line',
+                        borderColor: '#2980b9',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        pointRadius: 0,
+                        fill: false,
+                        order: 1
+                    },
+                    {
+                        label: 'PVEP Admin Target (26.4k)',
+                        data: Array(last7Dates.length).fill(pvepDailyTarget),
+                        type: 'line',
+                        borderColor: '#e74c3c',
+                        borderWidth: 2,
+                        borderDash: [3, 3],
+                        pointRadius: 0,
+                        fill: false,
+                        order: 1
+                    }
+                ]
             },
-            scales: {
-                x: {
-                    grid: { display: false }
-                },
-                // Trục Y trái: Sản lượng từng tháng
-                yMonthly: {
-                    type: 'linear',
-                    position: 'left',
-                    title: {
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
                         display: true,
-                        text: 'Sản Lượng Tháng (bbls)',
-                        color: '#2c3e50',
-                        font: { weight: 'bold' }
-                    },
-                    min: 0,
-                    max: 1200000,
-                    ticks: {
-                        callback: function(value) { return (value / 1000) + 'k'; }
+                        position: 'top',
+                        labels: { boxWidth: 12, font: { size: 11 } }
                     }
                 },
-                // Trục Y phải: Sản lượng cộng dồn
-                yCumulative: {
-                    type: 'linear',
-                    position: 'right',
-                    title: {
-                        display: true,
-                        text: 'Sản Lượng Cộng Dồn (bbls)',
-                        color: '#16a085',
-                        font: { weight: 'bold' }
+                scales: {
+                    y: {
+                        min: 20000,
+                        ticks: { callback: v => (v / 1000).toFixed(1) + 'k' }
+                    }
+                }
+            }
+        });
+
+        // Biểu đồ Sản lượng Theo Tháng & Cộng Dồn (Biểu đồ 3)
+        if (chart1) chart1.destroy();
+        const ctx1 = document.getElementById('monthlyProductionChart').getContext('2d');
+        chart1 = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: shortLabels,
+                datasets: [
+                    { label: 'Thực Tế Tháng (Actual Oil)', data: actualOil, backgroundColor: '#27ae60', borderRadius: 4, yAxisID: 'yMonthly' },
+                    { label: 'KH MCM Tháng Target', data: mcmTarget, backgroundColor: '#2980b9', borderRadius: 4, yAxisID: 'yMonthly' },
+                    { label: 'KH Quản Trị PVEP Target', data: pvepTarget, backgroundColor: 'rgba(231, 76, 60, 0.4)', borderColor: '#e74c3c', borderWidth: 1, borderRadius: 4, yAxisID: 'yMonthly' },
+                    { label: 'Cộng Dồn Thực Tế (Cum. Actual)', data: actualCum, type: 'line', borderColor: '#1e8449', backgroundColor: '#1e8449', borderWidth: 3, pointRadius: 5, fill: false, yAxisID: 'yCumulative' },
+                    { label: 'Cộng Dồn KH MCM (Cum. MCM)', data: mcmCum, type: 'line', borderColor: '#2980b9', borderWidth: 2, borderDash: [5, 5], fill: false, yAxisID: 'yCumulative' },
+                    { label: 'Cộng Dồn KH PVEP (Cum. PVEP)', data: pvepCum, type: 'line', borderColor: '#c0392b', borderWidth: 2, borderDash: [3, 3], fill: false, yAxisID: 'yCumulative' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yMonthly: { type: 'linear', position: 'left', min: 0, max: 1200000, ticks: { callback: v => (v / 1000) + 'k' } },
+                    yCumulative: { type: 'linear', position: 'right', min: 0, max: 12000000, grid: { drawOnChartArea: false }, ticks: { callback: v => (v / 1000000).toFixed(1) + 'M' } }
+                }
+            }
+        });
+
+        // VẼ BIỂU ĐỒ SỐ 4: CÔNG SUẤT CÁC MÁY NÉN KHÍ CPP LIÊN TỤC HẰNG NGÀY TỪ 01/01/2026
+        if (chart4) chart4.destroy();
+        const ctx4 = document.getElementById('compressorFullChart').getContext('2d');
+        chart4 = new Chart(ctx4, {
+            type: 'line',
+            data: {
+                labels: rawCompressorData.map(item => item.d),
+                datasets: [
+                    {
+                        label: 'CPP LGC-A (MMscfd)',
+                        data: rawCompressorData.map(item => item.lgcA),
+                        borderColor: '#8e44ad',
+                        backgroundColor: '#8e44ad',
+                        borderWidth: 1.5,
+                        pointRadius: 1.5,
+                        pointHoverRadius: 5,
+                        fill: false,
+                        tension: 0.2,
+                        yAxisID: 'yLGC'
                     },
-                    min: 0,
-                    max: 12000000,
-                    grid: { drawOnChartArea: false },
-                    ticks: {
-                        callback: function(value) { return (value / 1000000).toFixed(1) + 'M'; }
+                    {
+                        label: 'CPP LGC-B (MMscfd)',
+                        data: rawCompressorData.map(item => item.lgcB),
+                        borderColor: '#e67e22',
+                        backgroundColor: '#e67e22',
+                        borderWidth: 1.5,
+                        pointRadius: 1.5,
+                        pointHoverRadius: 5,
+                        fill: false,
+                        tension: 0.2,
+                        yAxisID: 'yLGC'
+                    },
+                    {
+                        label: 'TBVN Total Flow (MMscfd)',
+                        data: rawCompressorData.map(item => item.tbvn),
+                        borderColor: '#16a085',
+                        backgroundColor: 'rgba(22, 160, 133, 0.08)',
+                        borderWidth: 2,
+                        pointRadius: 1.5,
+                        pointHoverRadius: 5,
+                        fill: true,
+                        tension: 0.2,
+                        yAxisID: 'yTBVN'
                     }
-                }
-            }
-        }
-    });
-
-    // Khởi tạo Biểu đồ 2 (Dự báo BOPD)
-    const bopdMonths = ['Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
-    const mcmBOPD = [24611, 26665, 26317, 25796, 25627];
-    const pvepBOPD = [26360, 29818, 29173, 28758, 28568];
-
-    const ctx2 = document.getElementById('bopdChart').getContext('2d');
-    new Chart(ctx2, {
-        type: 'line',
-        data: {
-            labels: bopdMonths,
-            datasets: [
-                {
-                    label: 'KH MCM (BOPD)',
-                    data: mcmBOPD,
-                    borderColor: '#2980b9',
-                    backgroundColor: '#2980b9',
-                    borderWidth: 2,
-                    tension: 0.2
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: {
+                        callbacks: {
+                            afterBody: function(context) {
+                                const dataIndex = context[0].dataIndex;
+                                const note = rawCompressorData[dataIndex].note;
+                                return note ? '\n📌 Sự cố/Ghi chú: ' + note : '';
+                            }
+                        }
+                    }
                 },
-                {
-                    label: 'KH PVEP ADM (BOPD)',
-                    data: pvepBOPD,
-                    borderColor: '#e74c3c',
-                    backgroundColor: '#e74c3c',
-                    borderWidth: 2,
-                    tension: 0.2
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    min: 20000,
-                    ticks: {
-                        callback: function(value) { return new Intl.NumberFormat('en-US').format(value) + ' BOPD'; }
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { maxTicksLimit: 30, font: { size: 10 } }
+                    },
+                    yLGC: {
+                        type: 'linear',
+                        position: 'left',
+                        title: { display: true, text: 'Lưu lượng CPP LGC (MMscfd)' },
+                        min: 0,
+                        max: 100
+                    },
+                    yTBVN: {
+                        type: 'linear',
+                        position: 'right',
+                        title: { display: true, text: 'Lưu lượng TBVN (MMscfd)' },
+                        min: 0,
+                        max: 45,
+                        grid: { drawOnChartArea: false }
                     }
                 }
             }
-        }
-    });
+        });
 
-    // Khởi tạo Biểu đồ 3 (Cơ cấu sản lượng các mỏ)
-    const ctx3 = document.getElementById('fieldBreakdownChart').getContext('2d');
-    new Chart(ctx3, {
-        type: 'doughnut',
-        data: {
-            labels: ['Mỏ SDSW', 'Mỏ CPP (SV+NE+SN)', 'Mỏ ST'],
-            datasets: [{
-                data: [28256, 38870, 78770],
-                backgroundColor: ['#f1c40f', '#e67e22', '#8e44ad']
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'bottom' }
+        // VẼ BIỂU ĐỒ SỐ 5: CÔNG SUẤT MÁY NÉN KHÍ STT - GRC TỪ 01/01/2026
+        if (chart5) chart5.destroy();
+        const ctx5 = document.getElementById('grcChart').getContext('2d');
+        chart5 = new Chart(ctx5, {
+            type: 'line',
+            data: {
+                labels: rawCompressorData.map(item => item.d),
+                datasets: [
+                    {
+                        label: 'STT GRC Flowrate (MMscfd)',
+                        data: rawCompressorData.map(item => item.grc),
+                        borderColor: '#9b59b6',
+                        backgroundColor: 'rgba(155, 89, 182, 0.1)',
+                        borderWidth: 2,
+                        pointRadius: 1.5,
+                        pointHoverRadius: 5,
+                        fill: true,
+                        tension: 0.2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: {
+                        callbacks: {
+                            afterBody: function(context) {
+                                const dataIndex = context[0].dataIndex;
+                                const grcNote = rawCompressorData[dataIndex].grcNote;
+                                return grcNote ? '\n🌀 Sự cố/Ghi chú GRC: ' + grcNote : '';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { maxTicksLimit: 30, font: { size: 10 } }
+                    },
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: { display: true, text: 'Lưu lượng STT GRC (MMscfd)' },
+                        min: 0,
+                        max: 140
+                    }
+                }
             }
+        });
+
+        // Render Danh sách nguyên nhân sản lượng gần đây
+        const reasonUl = document.getElementById('reasonList');
+        reasonUl.innerHTML = '';
+        let hasReason = false;
+        
+        last7Dates.slice(-4).reverse().forEach(d => {
+            if (dailyReasons[d]) {
+                hasReason = true;
+                reasonUl.innerHTML += `<li><b>Ngày ${d}:</b> ${dailyReasons[d]}</li>`;
+            }
+        });
+
+        if (!hasReason) {
+            reasonUl.innerHTML = '<li><i>Không có ghi nhận biến động bất thường trong 7 ngày qua.</i></li>';
         }
-    });
+
+        // Render Danh sách ghi chú sự cố máy nén khí CPP
+        const compNotesUl = document.getElementById('compressorNotesList');
+        compNotesUl.innerHTML = '';
+        rawCompressorData.filter(item => item.note !== '').reverse().forEach(item => {
+            compNotesUl.innerHTML += `<li><b>Ngày ${item.d}/2026:</b> ${item.note}</li>`;
+        });
+
+        // Render Danh sách ghi chú sự cố máy nén khí GRC
+        const grcNotesUl = document.getElementById('grcNotesList');
+        grcNotesUl.innerHTML = '';
+        rawCompressorData.filter(item => item.grcNote !== '').reverse().forEach(item => {
+            grcNotesUl.innerHTML += `<li><b>Ngày ${item.d}/2026:</b> ${item.grcNote}</li>`;
+        });
+    }
+
+    window.onload = function() {
+        renderDashboard();
+    };
 </script>
 
 </body>
