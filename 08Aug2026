@@ -363,7 +363,8 @@
         "2026-08-08": 26818,
         "2026-08-09": 27456,
         "2026-08-10": 26078,
-        "2026-08-11": 26026
+        "2026-08-11": 26026,
+        "2026-08-12": 25968
     };
 
     // KHAI BÁO NGUYÊN NHÂN TĂNG/GIẢM BẤT THƯỜNG CHO CÁC NGÀY
@@ -372,10 +373,11 @@
         "2026-08-08": "Tăng (+2,459 bbls): Hoàn thành bảo dưỡng, đưa máy nén khí hoạt động trở lại 100% công suất.",
         "2026-08-09": "Tăng (+638 bbls): Tối ưu hóa dòng chảy giếng ST-02X.",
         "2026-08-10": "Giảm (-1,378 bbls): Điều chỉnh giảm sản lượng kỹ thuật định kỳ tại giếng SDSW.",
-        "2026-08-11": "Ổn định (-52 bbls): Khai thác ổn định theo đúng kế hoạch vận hành."
+        "2026-08-11": "Ổn định (-52 bbls): Khai thác ổn định theo đúng kế hoạch vận hành.",
+        "2026-08-12": "Giảm -68 thùng so với 11/8, SVNE: -212 bbls (shut in SVNE-2P at 17:30 for heavy lift - SIMOPs)"
     };
 
-    // DỮ LIỆU ĐẦY ĐỦ 223 NGÀY TỪ FILE PDF MONITORING (01/01/2026 - 11/08/2026)
+    // DỮ LIỆU ĐẦY ĐỦ CÁC NGÀY TỪ FILE PDF MONITORING (01/01/2026 - 12/08/2026)
     const rawCompressorData = [
         { d: '01/01', tbvn: 32.99, lgcA: 80.39, lgcB: 68.31, grc: 119.65, note: '', grcNote: '' },
         { d: '02/01', tbvn: 33.04, lgcA: 80.32, lgcB: 67.93, grc: 119.84, note: '', grcNote: '' },
@@ -598,8 +600,9 @@
         { d: '07/08', tbvn: 31.81, lgcA: 73.57, lgcB: 62.64, grc: 114.41, note: 'LGC-B tripped do van điều áp FMV báo lỗi', grcNote: 'Giàn CPP bị sự cố ESD-2 lan truyền gây dừng khẩn cấp ESD-3 tại STT' },
         { d: '08/08', tbvn: 31.60, lgcA: 71.20, lgcB: 57.67, grc: 113.32, note: '', grcNote: '' },
         { d: '09/08', tbvn: 31.89, lgcA: 76.54, lgcB: 65.76, grc: 113.01, note: '', grcNote: '' },
-        { d: '10/08', tbvn: 32.26, lgcA: 76.91, lgcB: 66.51, grc: 113.20, note: 'Giàn CPP gặp sự cố ESD-2 từ 03:25 đến 03:45', grcNote: '' },
-        { d: '11/08', tbvn: 32.09, lgcA: 76.23, lgcB: 66.40, grc: 113.15, note: '', grcNote: '' }
+        { d: '10/08', tbvn: 32.26, lgcA: 76.91, lgcB: 66.51, grc: 113.20, note: '', grcNote: '' },
+        { d: '11/08', tbvn: 32.09, lgcA: 76.23, lgcB: 66.40, grc: 113.15, note: '', grcNote: '' },
+        { d: '12/08', tbvn: 30.94, lgcA: 76.10, lgcB: 66.69, grc: 112.870, note: '', grcNote: '' }
     ];
 
     let chart1, chart2, chart3, chart4, chart5;
